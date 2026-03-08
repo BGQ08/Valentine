@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose: #c0415a;
+    --deep: #1a0a12;
+    --mist: #2d1220;
+    --gold: #e8c4a0;
+    --pale: #f5e6ea;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--deep);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Lato', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Rain */
+  .rain-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .drop {
+    position: absolute;
+    top: -20px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(192, 65, 90, 0.25));
+    border-radius: 1px;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh); }
+  }
+
+  /* Petals */
+  .petal {
+    position: absolute;
+    font-size: 14px;
+    opacity: 0;
+    animation: petalFall linear infinite;
+    pointer-events: none;
+  }
+  @keyframes petalFall {
+    0%   { transform: translateY(-30px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(10,0,6,0.7) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Content */
+  .content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .eyebrow {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(232, 196, 160, 0.5);
+    margin-bottom: 16px;
+    animation: fadeIn 1.5s ease both;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(32px, 6vw, 58px);
+    color: var(--pale);
+    line-height: 1.2;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    animation: fadeIn 1.5s 0.3s ease both;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(232, 196, 160, 0.55);
+    margin-bottom: 44px;
+    animation: fadeIn 1.5s 0.6s ease both;
+  }
+
+  /* Buttons */
+  .buttons {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    min-height: 140px;
+    animation: fadeIn 1.5s 0.9s ease both;
+  }
+
+  .btn {
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .yes-btn {
+    background: var(--rose);
+    color: #fff;
+    box-shadow: 0 4px 24px rgba(192, 65, 90, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .yes-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  }
+  .yes-btn:hover {
+    box-shadow: 0 8px 32px rgba(192, 65, 90, 0.6);
+    transform: translateY(-3px);
+  }
+
+  .no-btn {
+    background: transparent;
+    color: rgba(245, 230, 234, 0.4);
+    border: 1px solid rgba(245, 230, 234, 0.15);
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  .no-btn:hover {
+    color: rgba(245, 230, 234, 0.6);
+    border-color: rgba(245, 230, 234, 0.3);
+  }
+
+  /* Cat */
+  .cat {
+    margin-top: 36px;
+    animation: fadeIn 1.5s 1.2s ease both;
+    position: relative;
+  }
+  .cat img {
+    width: 290px;
+    filter: drop-shadow(0 8px 24px rgba(192, 65, 90, 0.3));
+    border-radius: 12px;
+  }
+  .cat-caption {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: rgba(232, 196, 160, 0.35);
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* Glow orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 500px; height: 500px; background: #c0415a; top: -150px; left: -100px; animation: drift 14s ease-in-out infinite alternate; }
+  .orb-2 { width: 400px; height: 400px; background: #6a1a3a; bottom: -100px; right: -80px; animation: drift 18s ease-in-out infinite alternate-reverse; }
+  @keyframes drift {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(40px, 30px); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Divider */
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 28px 0 0;
+    width: 260px;
+    animation: fadeIn 1.5s 1.4s ease both;
+  }
+  .div-line { flex:1; height: 1px; background: linear-gradient(to right, transparent, rgba(192,65,90,0.35), transparent); }
+  .div-dot { color: var(--rose); font-size: 9px; }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="rain-layer" id="rainLayer"></div>
+
+<div class="content">
+  <p class="eyebrow">Valentine's Day</p>
+  <h1>Valentine hay say bye bye?</em></h1>
+  <p class="sub">...anh vẫn đang chờ em trả lời</p>
+
+  <div class="buttons">
+    <button class="btn yes-btn" id="yesBtn" onclick="growYes()">Có, em đồng ý 🌹</button>
+    <button class="btn no-btn" onclick="goToPassword()">Không...</button>
+  </div>
+
+  <div class="cat">
+    <img src="bugcat-capoo.gif" alt="capoo">
+  </div>
+
+  <div class="divider">
+    <div class="div-line"></div>
+    <div class="div-dot">♥</div>
+    <div class="div-line"></div>
+  </div>
+</div>
+
+<script>
+  // Rain
+  const rainLayer = document.getElementById('rainLayer');
+  for (let i = 0; i < 60; i++) {
+    const d = document.createElement('div');
+    d.className = 'drop';
+    d.style.left = Math.random() * 100 + 'vw';
+    d.style.height = (40 + Math.random() * 60) + 'px';
+    d.style.animationDuration = (0.6 + Math.random() * 0.8) + 's';
+    d.style.animationDelay = (Math.random() * 3) + 's';
+    d.style.opacity = 0.3 + Math.random() * 0.4;
+    rainLayer.appendChild(d);
+  }
+  // Petals
+  const petals = ['🌸','🌹','🥀','❥'];
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement('span');
+    p.className = 'petal';
+    p.textContent = petals[Math.floor(Math.random() * petals.length)];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.fontSize = (10 + Math.random() * 10) + 'px';
+    p.style.animationDuration = (6 + Math.random() * 8) + 's';
+    p.style.animationDelay = (Math.random() * 8) + 's';
+    rainLayer.appendChild(p);
+  }
+
+  let w = 180, h = 52, fs = 14;
+  function growYes() {
+    w += 18; h += 8; fs += 1.5;
+    const btn = document.getElementById('yesBtn');
+    btn.style.width = w + 'px';
+    btn.style.height = h + 'px';
+    btn.style.fontSize = fs + 'px';
+    if (w >= 340) window.location.href = 'WD.html';
+  }
+  function goToPassword() {
+    window.location.href = 'password.html';
+  }
+</script>
+</body>
+</html>
